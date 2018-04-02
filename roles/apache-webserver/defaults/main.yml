@@ -1,0 +1,5 @@
+---
+docker_project_path: /home/ec2-user/docker-project-two
+httpd_dockerfile: Dockerfile
+document_root: public-html
+docker_container_name: httpd-server
