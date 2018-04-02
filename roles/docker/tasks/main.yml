@@ -1,0 +1,29 @@
+---
+- name: Disable SELinux
+  selinux:
+    state: disabled
+- name: Yum update all packages
+  yum:
+    name: "*"
+    state: latest
+- name: Add docker-ce repository
+  yum_repository:
+    name: docker-ce
+    description: Docker Repository
+    baseurl: "{{ base_url_docker }}"
+    gpgkey: "{{ gpg_key_docker }}"
+    gpgcheck: yes
+    file: docker
+- name: Install docker
+  yum:
+    name: docker
+    state: latest
+- name: Enable Docker service start at boot
+  service:
+    name: docker
+    enabled: yes
+- name: Add IPs to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ etc_hosts_github }}"
+    state: present
