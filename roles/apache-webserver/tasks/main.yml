@@ -11,8 +11,17 @@
   copy:
     src: "{{ document_root }}"
     dest: "{{ docker_project_path }}"
-- name: Build the container
-  command: docker build -t "{{ docker_container_name }}" "{{ docker_project_path }}"
+- name: Check if container is running
+  command: docker ps -q -f name="{{ docker_container_name }}"
+  register: docker_ps
+- name: Stop running container
+  command: docker stop "{{ docker_container_name }}"
+  when: docker_ps.changed
+- name: Remove container
+  command: docker rm "{{ docker_container_name }}"
+  when: docker_ps.changed
+- name: Build the container image
+  command: docker build -t "{{ docker_image_name }}" "{{ docker_project_path }}"
 - name: Run the container
-  command: docker run -d -p 80:80 -t "{{ docker_container_name }}"
+  command: docker run -d -p 80:80 -t --name "{{ docker_container_name }}" "{{ docker_image_name }}"
 
